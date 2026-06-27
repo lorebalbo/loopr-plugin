@@ -39,8 +39,12 @@ Hierarchy: **home orchestrator → per-project orchestrator → per-TODO sub-age
 
 **Status is the orchestrator's job (required).** The per-project orchestrator
 runs locally and always holds the MCP, so *it* — not the sub-agents — drives
-every TODO's status. When a wave starts, the orchestrator's **first** action is
-`edit_todo(status='in_progress')` for **every** TODO in that wave, *before* any
+every TODO's status. **Before any work touches a TODO, its status is already
+`in_progress`.** This is unconditional and is *not* gated on "a wave starting":
+even when the ask is a single TODO you resolve inline — no home/per-project
+orchestrator, no waves — your **first** MCP call is still
+`edit_todo(status='in_progress')`, before reading code or editing a file. In the
+batched flow the orchestrator does this for **every** TODO in a wave *before* any
 sub-agent or cloud run begins. It calls `close_todo` for a TODO only once that
 TODO's work is complete and merged/verified (§3.6). A TODO must never go
 `open → closed` directly — `in_progress` is written at pickup (a cloud sub-agent
