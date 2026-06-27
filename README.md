@@ -26,6 +26,19 @@ Then just talk to Claude:
 
 Track everything on the board at **https://loopr-consent.onrender.com**.
 
+## First connect shows "SDK auth failed"?
+
+A one-time Claude Code quirk with plugin-provided OAuth servers — on a fresh
+install the server starts connecting before it has a token, so the first
+interactive sign-in doesn't always bind. Fix it once:
+
+- Run `/mcp` in Claude Code, select **Loopr**, and toggle it **off then on**
+  (or restart Claude Code), then authenticate. It sticks after that.
+
+If you ever need a clean reset, **log out before uninstalling**
+(`claude mcp logout plugin:loopr:loopr`) and don't delete the OAuth client in
+your Supabase project — clearing the local token is all that's needed.
+
 ## What this repo is
 
 This is the public **distribution** repo for the Loopr Claude Code plugin —
