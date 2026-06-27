@@ -3,13 +3,13 @@
   "owner": { "name": "Lorenzo Balboni", "url": "https://github.com/lorebalbo" },
   "metadata": {
     "description": "Loopr — capture TODOs under named projects and let your agents loop on them.",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "plugins": [
     {
       "name": "loopr",
       "source": "./",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "The Loopr skills (capture / resolve / bedtime) plus the hosted Loopr MCP connector.",
       "keywords": ["todo", "mcp", "orchestration", "productivity"]
     }
