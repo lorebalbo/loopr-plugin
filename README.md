@@ -9,12 +9,14 @@ install. No clone required.
 claude plugin marketplace add lorebalbo/loopr-plugin
 claude plugin install loopr@loopr
 
-# 2. sign in to the MCP once, in your browser (no key is ever pasted)
-claude mcp login loopr
+# 2. authenticate the plugin's MCP server, in your browser (no key is ever pasted)
+claude mcp login plugin:loopr:loopr
 ```
 
 Or from inside Claude Code: `/plugin marketplace add lorebalbo/loopr-plugin`
-then `/plugin install loopr@loopr`.
+then `/plugin install loopr@loopr`, and authenticate with `/mcp`. (A plugin's
+MCP server is namespaced `plugin:<plugin>:<server>` — so it's `plugin:loopr:loopr`,
+which is why `claude mcp login loopr` says "no server named loopr".)
 
 Then just talk to Claude:
 
@@ -35,7 +37,7 @@ to your own account by Postgres row-level security.
 ## Manage
 
 ```bash
-claude plugin update loopr        # update to the latest
-claude plugin uninstall loopr     # remove the plugin
-claude mcp logout loopr           # sign out of the MCP
+claude plugin update loopr            # update to the latest
+claude plugin uninstall loopr         # remove the plugin
+claude mcp logout plugin:loopr:loopr  # sign out of the MCP
 ```
