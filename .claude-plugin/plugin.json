@@ -1,0 +1,15 @@
+{
+  "name": "loopr",
+  "version": "0.1.0",
+  "description": "Capture TODOs in natural language under named projects and let Claude plan and resolve them. Bundles the Loopr skills (capture / resolve / bedtime) and the hosted Loopr MCP connector — one install, no clone.",
+  "author": { "name": "Lorenzo Balboni", "url": "https://github.com/lorebalbo" },
+  "homepage": "https://loopr-consent.onrender.com",
+  "repository": "https://github.com/lorebalbo/loopr-plugin",
+  "keywords": ["todo", "mcp", "orchestration", "productivity", "agents"],
+  "mcpServers": {
+    "loopr": {
+      "type": "http",
+      "url": "https://wsdftochnvqawiwkpktg.supabase.co/functions/v1/mcp"
+    }
+  }
+}
