@@ -37,10 +37,16 @@ Hierarchy: **home orchestrator → per-project orchestrator → per-TODO sub-age
 3. Execute: **local** if running in Claude Code, **cloud** if on
    Desktop/mobile/web.
 
-Single-TODO state cycle: on pickup → `edit_todo(status='in_progress')`; when the
-work is complete → `close_todo`. Grouped/sequenced TODOs are handled by **one**
-sub-agent that applies `in_progress → closed` to **each** TODO in plan order —
-not one agent per TODO.
+**Status is the orchestrator's job (required).** The per-project orchestrator
+runs locally and always holds the MCP, so *it* — not the sub-agents — drives
+every TODO's status. When a wave starts, the orchestrator's **first** action is
+`edit_todo(status='in_progress')` for **every** TODO in that wave, *before* any
+sub-agent or cloud run begins. It calls `close_todo` for a TODO only once that
+TODO's work is complete and merged/verified (§3.6). A TODO must never go
+`open → closed` directly — `in_progress` is written at pickup (a cloud sub-agent
+may not even have the MCP, which is exactly why the orchestrator owns this).
+Grouping decides *who does the work* — one sub-agent can resolve several
+grouped/sequenced TODOs in plan order — not who sets status.
 
 ## Planning — waves (§3.3)
 

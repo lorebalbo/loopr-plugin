@@ -34,8 +34,12 @@ the server.
    from the description. Never ask the user for a title.
 3. **Confirm with the title only.** After saving, recap the title — not the
    description, not internal IDs.
-4. **A TODO is `closed` only when the work is actually done.** Lifecycle is
-   `open → in_progress → closed`, never `closed` early.
+4. **Walk the lifecycle `open → in_progress → closed` — never skip a step.** The
+   moment a TODO is picked up to be worked on, call `edit_todo(status='in_progress')`
+   **before any work starts**; mark it `closed` only when the work is actually
+   done. Jumping `open → closed` is a bug — the board must show work in progress.
+   In a resolve flow the **orchestrator** (local, always holds the MCP) owns these
+   transitions, so a cloud sub-agent lacking the MCP is never an excuse to skip them.
 5. **When unsure, ask — don't guess.** This applies to duplicates, ambiguous
    project matches, and ambiguous "edit the last one" references.
 

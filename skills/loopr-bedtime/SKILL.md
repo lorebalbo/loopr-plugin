@@ -77,8 +77,11 @@ For each run, schedule a client task whose prompt:
 
 1. **First line** = the `LOOPR-BEDTIME | …` marker above.
 2. **Body** = instructions to resolve those TODO(s) in the cloud for that project
-   (clone `project.github_url`, isolated branch/PR, `in_progress → closed` per
-   TODO, reconcile/merge per `loopr-resolve` §3.6).
+   (clone `project.github_url`, isolated branch/PR, reconcile/merge per
+   `loopr-resolve` §3.6). The run **owns status** for its TODOs: mark each
+   `in_progress` when it starts that TODO and `closed` only when done — never
+   `open → closed` directly. (A scheduled run fires long after this batch is
+   built, so the run itself — not this orchestrator — sets status.)
 
 Confirm the batch back to the user as a **list of titles + times** (titles only,
 per the golden rules — never dump descriptions/IDs).
