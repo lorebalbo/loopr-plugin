@@ -24,11 +24,12 @@ selection, wave planning, batch tagging, and bulk rescheduling.
 
 ## How scheduling works (no Loopr-side schedule store)
 
-Loopr's data model has **no schedule table and no tag column** — the TODOs only
-hold `status`. So the schedule lives in **the client's own scheduler** (Claude's
-"schedule this prompt at a time" capability), not in Loopr. To make the batch
-recognizable later, **embed a marker in the first line of every scheduled
-prompt**:
+Loopr's data model has **no schedule table** — a TODO holds `status` and an
+optional `tag`, but no scheduling state (the todo `tag`, e.g. `NeedHuman`, is a
+classification, unrelated to this batch marker). So the schedule lives in **the
+client's own scheduler** (Claude's "schedule this prompt at a time" capability),
+not in Loopr. To make the batch recognizable later, **embed a marker in the first
+line of every scheduled prompt**:
 
 ```
 LOOPR-BEDTIME | batch=<YYYY-MM-DD> | seq=<n> | wave=<w> | project=<name> | todos=<id,id,…>
@@ -56,6 +57,10 @@ Two modes:
 2. **You propose** → pull the candidate `open` TODOs (`list_todos`), present a
    short **report** of what you'd implement overnight, and proceed only once the
    user **approves** it.
+
+**Never schedule a `NeedHuman` TODO.** Those are human-in-the-loop and excluded
+from all automation (see `loopr-resolve`). Drop them from the candidate set; if
+the user's explicit selection names one, flag it and leave it out of the batch.
 
 Then **plan the waves** exactly as in `loopr-resolve` (semantic + light
 file-overlap pass; dependent chains serialize, independent groups parallelize).

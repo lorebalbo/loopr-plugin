@@ -67,10 +67,31 @@ next wave starts **only after** the previous completes (waves are barriers).
 
 - **Max concurrency is user-configurable, default 7.** Independent groups beyond
   the limit queue and start as slots free up.
+- **Priority orders the work.** Each TODO carries a priority
+  (`high`/`medium`/`low`, default `low`; `list_todos` returns it). Order the
+  waves so higher-priority TODOs go first, and when concurrency is capped,
+  higher-priority TODOs claim the free slots first. Priority breaks ties in
+  ordering — it never overrides a hard dependency: a low-priority prerequisite
+  still runs before the high-priority TODO that depends on it.
 
 Example: `users` table (1); `POST /login` (2, dep 1); `GET /profile` (3, dep 1);
 README (4, independent). → Wave 1: {1, 4}; Wave 2: {2, 3}. If 2 and 3 touched the
 same file, serialize them into separate waves.
+
+## Human-in-the-loop: the `NeedHuman` tag
+
+A TODO tagged **`NeedHuman`** is **cut out of automation** — it needs a person to
+decide or validate (investigations, weighty design calls, anything the user wants
+to judge themselves). When resolving a project:
+
+- **Exclude `NeedHuman` TODOs from the plan.** They never join a wave, never get a
+  sub-agent, and never go to a cloud run or a `bedtime` batch. `list_todos`
+  returns each TODO's `tag_name` (and `tag` filters by it) — use it to skip them.
+- **Surface them instead.** After planning the automatable work, tell the user
+  which open TODOs are held for a human ("these N need you"), so they can resolve
+  them **one at a time, with you in the loop** — off the automated track.
+- If the user explicitly asks to work one, do it **interactively** as a normal
+  inline TODO (still `open → in_progress → closed`), with the human present.
 
 ## Local execution (§3.4)
 
