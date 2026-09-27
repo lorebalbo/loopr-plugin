@@ -44,6 +44,11 @@ the server.
    in progress. In a resolve flow the **orchestrator** (local, always holds the
    MCP) owns these transitions, so a cloud sub-agent lacking the MCP is never an
    excuse to skip them.
+   **Review gate:** a TODO with `need_review: true` lands in **`review`** (the
+   dashboard's Review column) when you close it — the server redirects the close
+   and returns a `note` — and a human approves it to Done. Treat `review` as "my
+   work is done, awaiting the human": report it that way and **never** try to
+   force it `closed` (don't re-close it, don't clear `need_review` to get past it).
 5. **When unsure, ask — don't guess.** This applies to duplicates, ambiguous
    project matches, and ambiguous "edit the last one" references.
 
@@ -53,9 +58,12 @@ the server.
 |---|---|
 | Find/confirm a project | `list_projects` → `create_project` / `update_project` |
 | Duplicate check | `list_todos(project_…, query=…)` across all statuses |
-| Add a TODO | `add_todo` (`description` verbatim, `title` yours) |
+| Add a TODO | `add_todo` (`description` verbatim, `title` yours; `need_review: true` only if the user wants to review/test it before Done) |
 | Link a repo | `update_project(github_url=…)` |
-| Start work / finish | `edit_todo(status='in_progress')` → `close_todo` |
+| Start work / finish | `edit_todo(status='in_progress')` → `close_todo` (a `need_review` TODO lands in `review` for the human) |
+| Work in the user's order | `list_todos(status='open')` — returns priority high→low, then the user's `sort_order` |
+| Flag for human review | `edit_todo(need_review=true)` — only when the user asks |
+| See a TODO's pictures | `get_todo` → `attachments` (metadata only; images are private, viewable in the dashboard) |
 | Edit/delete a recent TODO | `edit_todo` / `delete_todo` |
 | Confirm connection identity | `whoami` |
 | Review what Loopr changed | `list_audit_log` |

@@ -46,7 +46,11 @@ orchestrator, no waves — your **first** MCP call is still
 `edit_todo(status='in_progress')`, before reading code or editing a file. In the
 batched flow the orchestrator does this for **every** TODO in a wave *before* any
 sub-agent or cloud run begins. It calls `close_todo` for a TODO only once that
-TODO's work is complete and merged/verified (§3.6). A TODO must never go
+TODO's work is complete and merged/verified (§3.6). If the TODO has
+`need_review: true`, that close lands it in **`review`** instead (the response
+carries a `note`): that's the expected end state for you — report it to the user
+as **awaiting their review in the Review column**, and don't try to close it
+again (a human approves it to Done from the dashboard). A TODO must never go
 `open → closed` directly — `in_progress` is written at pickup (a cloud sub-agent
 may not even have the MCP, which is exactly why the orchestrator owns this).
 Grouping decides *who does the work* — one sub-agent can resolve several
@@ -73,6 +77,11 @@ next wave starts **only after** the previous completes (waves are barriers).
   higher-priority TODOs claim the free slots first. Priority breaks ties in
   ordering — it never overrides a hard dependency: a low-priority prerequisite
   still runs before the high-priority TODO that depends on it.
+- **Within a priority level, follow `sort_order`.** `list_todos` returns TODOs in
+  the user's established order (priority desc, then `sort_order`); the user sets
+  that order by dragging cards in the dashboard's Open column. So within a
+  priority group, execute (and claim slots) in that order unless a hard
+  dependency says otherwise.
 
 Example: `users` table (1); `POST /login` (2, dep 1); `GET /profile` (3, dep 1);
 README (4, independent). → Wave 1: {1, 4}; Wave 2: {2, 3}. If 2 and 3 touched the
@@ -92,6 +101,10 @@ to judge themselves). When resolving a project:
   them **one at a time, with you in the loop** — off the automated track.
 - If the user explicitly asks to work one, do it **interactively** as a normal
   inline TODO (still `open → in_progress → closed`), with the human present.
+
+Don't confuse it with **`need_review`**: a `need_review` TODO *is* automated
+normally — only its last step differs (closing lands it in `review` for the human
+to approve, see the status rules above).
 
 ## Local execution (§3.4)
 

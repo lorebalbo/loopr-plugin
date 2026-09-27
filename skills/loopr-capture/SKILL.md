@@ -19,7 +19,7 @@ tool cheat-sheet. Then follow the flow below.
 ```
 have description + project?
   no  → ask ONLY for what's missing, then continue
-  yes → duplicate check (semantic, across open / in_progress / closed)
+  yes → duplicate check (semantic, across open / in_progress / review / closed)
           similar found → show it, let the user decide (don't auto-skip)
         project match:
           exact         → use it
@@ -43,7 +43,12 @@ have description + project?
 Details that matter:
 
 - **Duplicates are semantic, not textual.** Use `list_todos(project_…, query=…)`
-  to pull candidates across **all three** states and judge similarity yourself.
+  to pull candidates across **all** states and judge similarity yourself.
+- **`need_review: true` only on request.** Set it (on `add_todo`, or later via
+  `edit_todo`) only when the user asks to review/test the result themselves
+  before it's done ("I want to check it first", "let me test it"). Then an agent
+  closing it lands it in the Review column for the user to approve. Otherwise
+  leave it off (default `false`).
 - **Project "similar but not identical" stops and asks.** Don't silently attach
   to the closest name.
 - **GitHub MCP or `gh` CLI — either works.** Repo lookup needs only one of them.

@@ -63,7 +63,10 @@ from all automation (see `loopr-resolve`). Drop them from the candidate set; if
 the user's explicit selection names one, flag it and leave it out of the batch.
 
 Then **plan the waves** exactly as in `loopr-resolve` (semantic + light
-file-overlap pass; dependent chains serialize, independent groups parallelize).
+file-overlap pass; dependent chains serialize, independent groups parallelize;
+higher priority first and, **within a priority level, the user's `sort_order`** —
+`list_todos` already returns them in that order, which the user set by dragging
+in the dashboard — unless a hard dependency says otherwise).
 Each scheduled run maps to the same unit cloud execution uses: a **dependent
 chain → one run**; **independent TODOs → one run each**.
 
@@ -86,7 +89,10 @@ For each run, schedule a client task whose prompt:
    `loopr-resolve` §3.6). The run **owns status** for its TODOs: mark each
    `in_progress` when it starts that TODO and `closed` only when done — never
    `open → closed` directly. (A scheduled run fires long after this batch is
-   built, so the run itself — not this orchestrator — sets status.)
+   built, so the run itself — not this orchestrator — sets status.) A
+   `need_review` TODO lands in `review` when the run closes it — that's done for
+   the run: it reports the TODO as awaiting human review in the Review column and
+   never tries to force it `closed`.
 
 Confirm the batch back to the user as a **list of titles + times** (titles only,
 per the golden rules — never dump descriptions/IDs).
